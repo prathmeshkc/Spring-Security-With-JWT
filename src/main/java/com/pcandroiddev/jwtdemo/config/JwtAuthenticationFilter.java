@@ -13,11 +13,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.web.SpringServletContainerInitializer;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+
+/**
+ * Request interceptor
+ * Before any request reaches any of the controller, it will be intercepted by this Filter class.
+ * Note: The exceptions are the requests that are permitted to be authorized beforehand.
+ * These requests are defined in the SecurityConfiguration class. Check it out!
+ */
 @Component
 @RequiredArgsConstructor //generates the constructor with any private field specified
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
