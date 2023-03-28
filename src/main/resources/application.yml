@@ -1,12 +1,12 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/jwt_security
-    username: root
-    password: 9403570266
+    username: #your mysql username
+    password: #your mysql password
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create-drop #feel free to change according to your use case
     show-sql: true
     properties:
       hibernate:
