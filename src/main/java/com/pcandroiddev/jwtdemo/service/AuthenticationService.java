@@ -2,9 +2,11 @@ package com.pcandroiddev.jwtdemo.service;
 
 
 import com.pcandroiddev.jwtdemo.model.*;
+import com.pcandroiddev.jwtdemo.model.exceptions.ExceptionBody;
 import com.pcandroiddev.jwtdemo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,20 +46,25 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse login(LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+    public ResponseEntity<?> login(LoginRequest request) {
 
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
 
-        var jwtToken = jwtService.generateTokenFromUserDetails(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        var user = userRepository.findByEmail(request.getEmail());
+
+        if (user.isPresent()) {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+
+            var jwtToken = jwtService.generateTokenFromUserDetails(user.get());
+            return ResponseEntity.ok(AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build());
+        }
+
+        return ResponseEntity.badRequest().body(new ExceptionBody("User not found!"));
     }
 }

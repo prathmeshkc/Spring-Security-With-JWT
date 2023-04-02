@@ -6,7 +6,9 @@ import com.pcandroiddev.jwtdemo.model.AuthenticationResponse;
 import com.pcandroiddev.jwtdemo.model.RegisterRequest;
 import com.pcandroiddev.jwtdemo.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,16 +25,16 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request
+            @RequestBody  @Valid RegisterRequest request
     ) {
-        return ResponseEntity.ok(authenticationService.register(request));
+        return new ResponseEntity<>(authenticationService.register(request), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> register(
+    public ResponseEntity<?> login(
             @RequestBody LoginRequest request
     ) {
-        return ResponseEntity.ok(authenticationService.login(request));
+        return authenticationService.login(request);
 
     }
 
